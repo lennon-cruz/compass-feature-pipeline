@@ -1,8 +1,7 @@
 """Smoke tests for the Compass feature pipeline: nothing errors, expected shapes come out."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-import pandas as pd
 import pytest
 
 from compass.data_generation import generate_transactions
@@ -41,7 +40,7 @@ def test_generate_transactions_has_expected_columns():
 
 def test_batch_pipeline_populates_offline_store(transactions_csv, tmp_path):
     store = OfflineStore(db_path=tmp_path / "offline.db")
-    as_of = datetime.now(timezone.utc)
+    as_of = datetime.now(UTC)
     run_batch_pipeline(as_of, store=store)
 
     features = store.get_features(CUSTOMER_ID, as_of)
@@ -65,7 +64,7 @@ def test_feature_api_returns_values_without_erroring(tmp_path, monkeypatch):
     monkeypatch.setattr("compass.serving.feature_api.OfflineStore", lambda: OfflineStore(db_path=offline_db))
     monkeypatch.setattr("compass.serving.feature_api.OnlineStore", lambda: OnlineStore(db_path=online_db))
 
-    as_of = datetime.now(timezone.utc)
+    as_of = datetime.now(UTC)
     offline_features = get_offline_features(CUSTOMER_ID, as_of)
     online_features = get_online_features(CUSTOMER_ID)
 

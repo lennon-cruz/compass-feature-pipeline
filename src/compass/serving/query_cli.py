@@ -1,7 +1,7 @@
 """CLI to look up a customer's features from both the offline and online stores."""
 
 import argparse
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from compass.store.offline_store import OfflineStore
 from compass.store.online_store import OnlineStore
@@ -39,9 +39,9 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    as_of = datetime.fromisoformat(args.as_of) if args.as_of else datetime.now(timezone.utc)
+    as_of = datetime.fromisoformat(args.as_of) if args.as_of else datetime.now(UTC)
     if as_of.tzinfo is None:
-        as_of = as_of.replace(tzinfo=timezone.utc)
+        as_of = as_of.replace(tzinfo=UTC)
 
     offline_store = OfflineStore()
     online_store = OnlineStore()

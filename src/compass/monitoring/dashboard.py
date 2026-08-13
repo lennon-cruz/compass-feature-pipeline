@@ -6,7 +6,7 @@ on-call engineer would check the health of the serving path.
 """
 
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from compass.serving.feature_api import get_offline_features, get_online_features
 from compass.store.online_store import OnlineStore
@@ -28,7 +28,7 @@ def _time_call(fn, *args) -> tuple[bool, float]:
     try:
         fn(*args)
         ok = True
-    except Exception:
+    except Exception:  # noqa: BLE001 -- a health probe must survive any endpoint failure
         ok = False
     elapsed_ms = (time.perf_counter() - start) * 1000
     return ok, elapsed_ms
@@ -37,7 +37,7 @@ def _time_call(fn, *args) -> tuple[bool, float]:
 def run_health_check() -> dict[str, float]:
     """Call both feature endpoints for a sample of customers and summarize uptime/latency."""
     customer_ids = _sample_customer_ids()
-    as_of = datetime.now(timezone.utc)
+    as_of = datetime.now(UTC)
 
     latencies_ms = []
     successes = 0

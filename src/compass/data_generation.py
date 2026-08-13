@@ -6,7 +6,7 @@ batch and streaming feature pipelines.
 """
 
 import random
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import numpy as np
 import pandas as pd
@@ -82,7 +82,7 @@ def generate_transactions(
     rng = np.random.default_rng(seed)
     py_rng = random.Random(seed)
 
-    end = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    end = datetime.now(UTC).replace(hour=0, minute=0, second=0, microsecond=0)
     start = end - timedelta(days=history_days)
 
     records = []

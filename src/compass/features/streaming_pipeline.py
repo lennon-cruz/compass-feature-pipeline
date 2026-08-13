@@ -8,11 +8,15 @@ adjustments without rescanning the transaction log on every update.
 
 import argparse
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pandas as pd
 
-from compass.config import EWMA_ALPHA, STREAMING_POLL_INTERVAL_SECONDS, TRANSACTIONS_PATH
+from compass.config import (
+    EWMA_ALPHA,
+    STREAMING_POLL_INTERVAL_SECONDS,
+    TRANSACTIONS_PATH,
+)
 from compass.store.online_store import OnlineStore
 
 FEATURE_NAME = "txn_amount_avg_30d"
@@ -58,7 +62,7 @@ def run_streaming_pipeline(store: OnlineStore, stop_after_seconds: float | None 
             break
 
         batch = pending.iloc[batch_start : batch_start + _BATCH_SIZE]
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         for _, event in batch.iterrows():
             customer_id = event["customer_id"]

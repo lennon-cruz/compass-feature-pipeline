@@ -6,7 +6,7 @@ a given date.
 """
 
 import argparse
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pandas as pd
 
@@ -34,7 +34,7 @@ def run_batch_pipeline(as_of: datetime, store: OfflineStore | None = None) -> Of
     store = store or OfflineStore()
 
     averages = compute_txn_amount_avg_30d(df, as_of)
-    computed_at = datetime.now(timezone.utc)
+    computed_at = datetime.now(UTC)
 
     for customer_id, avg in averages.items():
         store.write_features(
@@ -57,9 +57,9 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    as_of = datetime.fromisoformat(args.as_of) if args.as_of else datetime.now(timezone.utc)
+    as_of = datetime.fromisoformat(args.as_of) if args.as_of else datetime.now(UTC)
     if as_of.tzinfo is None:
-        as_of = as_of.replace(tzinfo=timezone.utc)
+        as_of = as_of.replace(tzinfo=UTC)
 
     store = run_batch_pipeline(as_of)
     print(f"Batch pipeline computed features as of {as_of.isoformat()} and wrote to {store.db_path}")
