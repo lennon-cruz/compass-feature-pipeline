@@ -1,0 +1,17 @@
+.local/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Generated data & local state
+data/raw/*
+!data/raw/.gitkeep
+*.db
+*.sqlite
+*.sqlite3

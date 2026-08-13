@@ -1,0 +1,30 @@
+[project]
+name = "compass-feature-pipeline"
+version = "0.1.0"
+description = "Compass: feature computation and serving for Solara Digital Bank's credit models"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pandas>=2.0",
+    "numpy>=1.24",
+]
+
+[project.scripts]
+generate-data = "compass.data_generation:main"
+batch-pipeline = "compass.features.batch_pipeline:main"
+streaming-pipeline = "compass.features.streaming_pipeline:main"
+query-features = "compass.serving.query_cli:main"
+monitor = "compass.monitoring.dashboard:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/compass"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
